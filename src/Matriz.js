@@ -55,7 +55,7 @@ export default class Matriz extends Component {
             ).then(async res => {
                 let matrizProcesadaAux = await res.data
                 console.log(matrizProcesadaAux)
-                this.setState({ matrizProcesada: matrizProcesadaAux['recibi esto '] })
+                this.setState({ matrizProcesada: matrizProcesadaAux['imagen_filtrada'] })
             }).catch(error => {
                 alert('Error al recibir datos')
             }
