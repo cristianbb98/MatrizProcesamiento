@@ -216,21 +216,15 @@ export default class Matriz extends Component {
                                     })}
                                 </thead>
                                 <tbody>
-                                    {
-                                        this.state.matrizProcesada.map((matriz, x) => {
-                                            return <tr><th>{x + 1}</th>{matriz.map((valor) => {
-                                                return <td>{this.caracteres[Number(valor / 10)]}</td>
-                                            })} </tr>
-                                        })
+                                    {this.state.matrizProcesada.map((matriz, x) => {
+                                        return <tr><th>{x + 1}</th>{matriz.map((valor) => {
+                                            return <td><p style={{ backgroundColor: this.colores[Number(valor / 10)], color: this.colores[Number(valor / 10)] }} key={x}>{valor}</p></td>
+                                        })} </tr>
+                                    })
                                     }
                                 </tbody>
                             </table>
-                            {this.state.matrizProcesada.map((matriz, x) => {
-                                return <tr><th>{x + 1}</th>{matriz.map((valor) => {
-                                    return <td><p style={{ backgroundColor: this.colores[Number(valor / 10)], color: this.colores[Number(valor / 10)] }} key={x}>{valor}</p></td>
-                                })} </tr>
-                            })
-                            }
+
                             <CSVLink data={this.state.matrizProcesada} separator={";"}>
                                 <button className="btn btn-info">Guardar archivo</button>
                             </CSVLink>
