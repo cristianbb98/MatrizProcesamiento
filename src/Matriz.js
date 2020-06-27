@@ -1,10 +1,13 @@
 import React from 'react';
 import { Component } from 'react';
 import axios from 'axios'
+import { CSVLink } from 'react-csv';
+import CSVReader from 'react-csv-reader';
 export default class Matriz extends Component {
 
 
     caracteres = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"]
+    colores = ["#FAFAFA", "#F5F5F5", "#EEEEEE", "#E0E0E0", "#BDBDBD", "#9E9E9E", "#757575", "#616161", "#424242", "#212121"]
     constructor() {
         super()
         this.state = {
@@ -67,60 +70,102 @@ export default class Matriz extends Component {
 
         return (
             <div className="container">
-                <div className="dimensiones">
-                    <label htmlFor="n">N: </label>
-                    <input type="number" name="n" id="n" onChange={this.handleDimension} />
-                    <label htmlFor="m">M: </label>
-                    <input type="number" name="m" id="m" onChange={this.handleDimension} />
-                    <p>Dimensiones</p>
-                    <button className="btn btn-warning" onClick={() => this.crearMatriz()}>Crear matriz </button>
+                <div className="row">
+                    <div className="archivo col-md-12 m-4">
+                        <CSVReader onFileLoaded={(data, fileInfo) => {
+                            this.setState({ matrizNumeros: data, matrizCaracteres: null })
+                        }}
+                            inputStyle={{ color: 'green' }} />
+                    </div>
+                </div>
+                <div className="dimensiones row">
+                    <div className="col">
+                        <h3>Dimensiones de la matriz</h3>
+                    </div>
+                    <div className="col">
+                        <label htmlFor="n">N: </label>
+                        <input type="number" name="n" id="n" onChange={this.handleDimension} />
+                    </div>
+                    <div className="col">
+                        <label htmlFor="m">M: </label>
+                        <input type="number" name="m" id="m" onChange={this.handleDimension} />
+                    </div>
+                    <div className="col">
+                        <button className="btn btn-warning" onClick={() => this.crearMatriz()}>Crear matriz</button>
+                    </div>
+                    {/* <div className="col">
+                        <button className="btn btn-secondary" onClick={() => this.limpiarMatriz()}>Limpiar matriz</button>
+                    </div> */}
+                </div>
+                <div className="caracteres row justify-align-center">
+                    <div className="col">
+                        <table>
+                            <thead>
+                                <th>Rango</th>
+                                <th>Caracter</th>
+                            </thead>
+                            <tbody>
+                                {Array.from(this.caracteres).map((caracter, index) => {
+                                    return (<tr><td>{index * 10} - {index * 10 + 9}</td><td>{caracter}</td></tr>)
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div className="matriz">
-                    {this.state.matrizNumeros != null ?
-                        <React.Fragment>
+                    <div className="row">
+                        {this.state.matrizNumeros != null ?
                             <React.Fragment>
-                                <table>
-                                    <thead>
-                                        <th></th>
-                                        {this.state.matrizNumeros[0].map((matriz, x) => {
-                                            return <th>{x + 1}</th>
-                                        })}
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.state.matrizNumeros.map((matriz, x) => {
-                                                return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
-                                                    return <td><input id={`${x}|${y}`} type="number" min="0" max="90" step="10" defaultValue={valor} onChange={this.onChangeMatriz} /></td>
-                                                })} </tr>
-                                            })
-                                        }
+                                <React.Fragment>
+                                    <div className="col-lg-12">
+                                        <table>
+                                            <thead>
+                                                <th></th>
+                                                {this.state.matrizNumeros[0].map((matriz, x) => {
+                                                    return <th>{x + 1}</th>
+                                                })}
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    this.state.matrizNumeros.map((matriz, x) => {
+                                                        return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
+                                                            return <td><input id={`${x}|${y}`} type="number" min="0" max="90" step="10" defaultValue={valor} onChange={this.onChangeMatriz} /></td>
+                                                        })} </tr>
+                                                    })
+                                                }
 
-                                    </tbody>
-                                </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </React.Fragment>
+                                <React.Fragment>
+                                    <div className="col-lg-12">
+                                        <table>
+                                            <thead>
+                                                <th></th>
+                                                {this.state.matrizNumeros[0].map((matriz, x) => {
+                                                    return <th>{x + 1}</th>
+                                                })}
+                                            </thead>
+                                            <tbody>
+                                                {console.log(this.state.matrizNumeros)}
+                                                {
+                                                    this.state.matrizNumeros.map((matriz, x) => {
+                                                        return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
+                                                            return <td>{this.caracteres[Number(valor) / 10]}</td>
+                                                        })} </tr>
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="col">
+                                        <button className="btn btn-success" onClick={() => this.enviarMatriz()}> Procesar </button>
+                                    </div>
+                                </React.Fragment>
                             </React.Fragment>
-                            <React.Fragment>
-                                <table>
-                                    <thead>
-                                        <th></th>
-                                        {this.state.matrizNumeros[0].map((matriz, x) => {
-                                            return <th>{x + 1}</th>
-                                        })}
-                                    </thead>
-                                    <tbody>
-                                        {console.log(this.state.matrizNumeros)}
-                                        {
-                                            this.state.matrizNumeros.map((matriz, x) => {
-                                                return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
-                                                    return <td>{this.caracteres[Number(valor) / 10]}</td>
-                                                })} </tr>
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
-                                <button className="btn btn-success" onClick={() => this.enviarMatriz()}> Procesar </button>
-                            </React.Fragment>
-                        </React.Fragment>
-                        : null}
+                            : null}
+                    </div>
                 </div>
                 {
                     this.state.matrizProcesada != null ?
@@ -164,7 +209,13 @@ export default class Matriz extends Component {
                                     </tbody>
                                 </table>
                             </React.Fragment>
-                        </React.Fragment>
+                            <CSVLink data={this.state.matrizProcesada} separator={";"}>
+                                <button className="btn btn-info">Guardar archivo</button>
+                            </CSVLink>
+                            <div>
+                                {Array.from(this.state.matrizProcesada).map((valor, i) => <p style={{ color: this.colores[Number(valor / 10)] }} key={i}>{'s'}</p>)}
+                            </div>
+                        </React.Fragment>                        
                         :
                         null
                 }
