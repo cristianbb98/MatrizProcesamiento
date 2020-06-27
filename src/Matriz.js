@@ -78,16 +78,16 @@ export default class Matriz extends Component {
                             inputStyle={{ color: 'green' }} />
                     </div>
                 </div>
-                <div className="dimensiones row">
+                <div className="dimensiones row mt-1">
                     <div className="col">
                         <h3>Dimensiones de la matriz</h3>
                     </div>
                     <div className="col">
-                        <label htmlFor="n">N: </label>
+                        <label htmlFor="n">N: &nbsp; </label>
                         <input type="number" name="n" id="n" onChange={this.handleDimension} />
                     </div>
                     <div className="col">
-                        <label htmlFor="m">M: </label>
+                        <label htmlFor="m">M: &nbsp; </label>
                         <input type="number" name="m" id="m" onChange={this.handleDimension} />
                     </div>
                     <div className="col">
@@ -97,9 +97,10 @@ export default class Matriz extends Component {
                         <button className="btn btn-secondary" onClick={() => this.limpiarMatriz()}>Limpiar matriz</button>
                     </div> */}
                 </div>
-                <div className="caracteres row justify-align-center">
-                    <div className="col">
-                        <table>
+                <div className="caracteres row d-flex justify-content-center mt-4">
+
+                    <div className="col-sm-2">
+                        <table className="table table-sm table-bordered bg-info">
                             <thead>
                                 <th>Rango</th>
                                 <th>Caracter</th>
@@ -111,85 +112,118 @@ export default class Matriz extends Component {
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div className="matriz">
-                    <div className="row">
-                        {this.state.matrizNumeros != null ?
-                            <React.Fragment>
-                                <React.Fragment>
-                                    <div className="col-lg-12">
-                                        <table>
-                                            <thead>
-                                                <th></th>
-                                                {this.state.matrizNumeros[0].map((matriz, x) => {
-                                                    return <th>{x + 1}</th>
-                                                })}
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    this.state.matrizNumeros.map((matriz, x) => {
-                                                        return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
-                                                            return <td><input id={`${x}|${y}`} type="number" min="0" max="90" step="10" defaultValue={valor} onChange={this.onChangeMatriz} /></td>
-                                                        })} </tr>
-                                                    })
-                                                }
 
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </React.Fragment>
-                                <React.Fragment>
-                                    <div className="col-lg-12">
-                                        <table>
-                                            <thead>
-                                                <th></th>
-                                                {this.state.matrizNumeros[0].map((matriz, x) => {
-                                                    return <th>{x + 1}</th>
-                                                })}
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    this.state.matrizNumeros.map((matriz, x) => {
-                                                        return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
-                                                            return <td>{this.caracteres[Number(valor) / 10]}</td>
-                                                        })} </tr>
-                                                    })
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="col">
-                                        <button className="btn btn-success" onClick={() => this.enviarMatriz()}> Procesar </button>
-                                    </div>
-                                </React.Fragment>
-                            </React.Fragment>
-                            : null}
-                    </div>
+                </div>
+                <div className="matriz mb-5">
+
+                    {this.state.matrizNumeros != null ?
+                        <React.Fragment>
+                            <div className="row d-flex justify-content-center mt-4">
+                                <table>
+                                    <thead>
+                                        <th></th>
+                                        {this.state.matrizNumeros[0].map((matriz, x) => {
+                                            return <th>{x + 1}</th>
+                                        })}
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.state.matrizNumeros.map((matriz, x) => {
+                                                return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
+                                                    return <td><input style={{ maxWidth: "40px" }} id={`${x}|${y}`} type="number" min="0" max="90" step="10" defaultValue={valor} onChange={this.onChangeMatriz} /></td>
+                                                })} </tr>
+                                            })
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="row d-flex justify-content-center mt-4">
+
+                                <div className="col-lg-2">
+                                    <table className="bg-light table table-bordered table-sm">
+                                        <thead>
+                                            <th></th>
+                                            {this.state.matrizNumeros[0].map((matriz, x) => {
+                                                return <th>{x + 1}</th>
+                                            })}
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.state.matrizNumeros.map((matriz, x) => {
+                                                    return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
+                                                        return <td>{this.caracteres[Number(valor) / 10]}</td>
+                                                    })} </tr>
+                                                })
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+
+                            <div className="row d-flex justify-content-center mt-1">
+                                <button className="btn btn-success" onClick={() => this.enviarMatriz()}> Procesar </button>
+                            </div>
+                        </React.Fragment>
+                        : null}
+
                 </div>
                 {
                     this.state.matrizProcesada != null ?
-                        <React.Fragment>
-                            <React.Fragment>
-                                <table>
-                                    <thead>
-                                        <th></th>
-                                        {this.state.matrizProcesada[0].map((matriz, x) => {
-                                            return <th>{x + 1}</th>
-                                        })}
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.state.matrizProcesada.map((matriz, x) => {
-                                                return <tr><th>{x + 1}</th>{matriz.map((valor) => {
-                                                    return <td>{valor}</td>
-                                                })} </tr>
-                                            })
-                                        }
+                        <React.Fragment className="mt-5">
+                            <div className="row d-flex justify-content-center">
 
-                                    </tbody>
-                                </table>
-                            </React.Fragment>
-                            <React.Fragment>
+                                <div className="col-lg-2">
+                                    <table className="table bg-light table-sm table-bordered">
+                                        <thead>
+                                            <th></th>
+                                            {this.state.matrizProcesada[0].map((matriz, x) => {
+                                                return <th>{x + 1}</th>
+                                            })}
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.state.matrizProcesada.map((matriz, x) => {
+                                                    return <tr><th>{x + 1}</th>{matriz.map((valor) => {
+                                                        return <td style={{ maxWidth: "20px" }}>{valor}</td>
+                                                    })} </tr>
+                                                })
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                            <div className="row d-flex justify-content-center">
+
+                                <div className="col-lg-2">
+                                    <table className="table table-bordered table-sm bg-light">
+                                        <thead>
+                                            <th></th>
+                                            {this.state.matrizProcesada[0].map((matriz, x) => {
+                                                return <th>{x + 1}</th>
+                                            })}
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.state.matrizProcesada.map((matriz, x) => {
+                                                    return <tr><th>{x + 1}</th>{matriz.map((valor) => {
+                                                        return <td>{this.caracteres[Number(valor / 10)]}</td>
+                                                    })} </tr>
+                                                })
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                            <div className="row d-flex justify-content-center">
                                 <table>
                                     <thead>
                                         <th></th>
@@ -198,35 +232,19 @@ export default class Matriz extends Component {
                                         })}
                                     </thead>
                                     <tbody>
-                                        {
-                                            this.state.matrizProcesada.map((matriz, x) => {
-                                                return <tr><th>{x + 1}</th>{matriz.map((valor) => {
-                                                    return <td>{this.caracteres[Number(valor / 10)]}</td>
-                                                })} </tr>
-                                            })
+                                        {this.state.matrizProcesada.map((matriz, x) => {
+                                            return <tr><th>{x + 1}</th>{matriz.map((valor) => {
+                                                return <td><p style={{ backgroundColor: this.colores[Number(valor / 10)], color: this.colores[Number(valor / 10)] }} key={x}>{valor}</p></td>
+                                            })} </tr>
+                                        })
                                         }
                                     </tbody>
                                 </table>
-                            </React.Fragment>
-                            <table>
-                                <thead>
-                                    <th></th>
-                                    {this.state.matrizProcesada[0].map((matriz, x) => {
-                                        return <th>{x + 1}</th>
-                                    })}
-                                </thead>
-                                <tbody>
-                                    {this.state.matrizProcesada.map((matriz, x) => {
-                                        return <tr><th>{x + 1}</th>{matriz.map((valor) => {
-                                            return <td><p style={{ backgroundColor: this.colores[Number(valor / 10)], color: this.colores[Number(valor / 10)] }} key={x}>{valor}</p></td>
-                                        })} </tr>
-                                    })
-                                    }
-                                </tbody>
-                            </table>
+                            </div>
+
 
                             <CSVLink data={this.state.matrizProcesada} separator={";"}>
-                                <button className="btn btn-info">Guardar archivo</button>
+                                <button className="btn btn-info mt-5">Guardar archivo</button>
                             </CSVLink>
                         </React.Fragment>
 
