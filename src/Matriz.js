@@ -148,7 +148,6 @@ export default class Matriz extends Component {
                                                 })}
                                             </thead>
                                             <tbody>
-                                                {console.log(this.state.matrizNumeros)}
                                                 {
                                                     this.state.matrizNumeros.map((matriz, x) => {
                                                         return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
@@ -209,13 +208,34 @@ export default class Matriz extends Component {
                                     </tbody>
                                 </table>
                             </React.Fragment>
+                            <table>
+                                <thead>
+                                    <th></th>
+                                    {this.state.matrizProcesada[0].map((matriz, x) => {
+                                        return <th>{x + 1}</th>
+                                    })}
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.state.matrizProcesada.map((matriz, x) => {
+                                            return <tr><th>{x + 1}</th>{matriz.map((valor) => {
+                                                return <td>{this.caracteres[Number(valor / 10)]}</td>
+                                            })} </tr>
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                            {this.state.matrizProcesada.map((matriz, x) => {
+                                return <tr><th>{x + 1}</th>{matriz.map((valor) => {
+                                    return <td><p style={{ backgroundColor: this.colores[Number(valor / 10)], color: this.colores[Number(valor / 10)] }} key={x}>{valor}</p></td>
+                                })} </tr>
+                            })
+                            }
                             <CSVLink data={this.state.matrizProcesada} separator={";"}>
                                 <button className="btn btn-info">Guardar archivo</button>
                             </CSVLink>
-                            <div>
-                                {Array.from(this.state.matrizProcesada).map((valor, i) => <p style={{ color: this.colores[Number(valor / 10)] }} key={i}>{'s'}</p>)}
-                            </div>
-                        </React.Fragment>                        
+                        </React.Fragment>
+
                         :
                         null
                 }
