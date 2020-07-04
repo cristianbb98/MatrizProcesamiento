@@ -66,10 +66,14 @@ export default class Matriz extends Component {
         }
     }
 
+
+   
     render() {
 
         return (
+
             <div className="container">
+  
                 <div className="row">
                     <div className="archivo col-md-12 m-4">
                         <CSVReader onFileLoaded={(data, fileInfo) => {
@@ -98,16 +102,19 @@ export default class Matriz extends Component {
                     </div> */}
                 </div>
                 <div className="caracteres row d-flex justify-content-center mt-4">
-
+                    {/*TABLA CARACTERES*/}
                     <div className="col-sm-2">
                         <table className="table table-sm table-bordered bg-info">
                             <thead>
-                                <th>Rango</th>
-                                <th>Caracter</th>
+                                <tr>
+                                    <th>Rango</th>
+                                    <th>Caracter</th>
+                                </tr>
+
                             </thead>
                             <tbody>
                                 {Array.from(this.caracteres).map((caracter, index) => {
-                                    return (<tr><td>{index * 10} - {index * 10 + 9}</td><td>{caracter}</td></tr>)
+                                    return (<tr key={index}><td>{index * 10} - {index * 10 + 9}</td><td>{caracter}</td></tr>)
                                 })}
                             </tbody>
                         </table>
@@ -116,21 +123,28 @@ export default class Matriz extends Component {
                 </div>
                 <div className="matriz mb-5">
 
+
                     {this.state.matrizNumeros != null ?
                         <React.Fragment>
+
+                            {/*Matriz input */}
                             <div className="row d-flex justify-content-center mt-4">
                                 <table>
                                     <thead>
-                                        <th></th>
-                                        {this.state.matrizNumeros[0].map((matriz, x) => {
-                                            return <th>{x + 1}</th>
-                                        })}
+
+                                        <tr>
+                                            <th></th>
+                                            {this.state.matrizNumeros[0].map((matriz, x) => {
+                                                return <th key={x}>{x + 1}</th>
+                                            })}
+                                        </tr>
+
                                     </thead>
                                     <tbody>
                                         {
                                             this.state.matrizNumeros.map((matriz, x) => {
-                                                return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
-                                                    return <td><input style={{ maxWidth: "40px" }} id={`${x}|${y}`} type="number" min="0" max="90" step="10" defaultValue={valor} onChange={this.onChangeMatriz} /></td>
+                                                return <tr key={x}><th>{x + 1}</th>{matriz.map((valor, y) => {
+                                                    return <td key={y}><input style={{ maxWidth: "40px" }} id={`${x}|${y}`} type="number" min="0" max="90" step="10" defaultValue={valor} onChange={this.onChangeMatriz} /></td>
                                                 })} </tr>
                                             })
                                         }
@@ -139,21 +153,25 @@ export default class Matriz extends Component {
                                 </table>
                             </div>
 
+                            {/*Matriz input caracteres */}
                             <div className="row d-flex justify-content-center mt-4">
 
                                 <div className="col-lg-2">
                                     <table className="bg-light table table-bordered table-sm">
                                         <thead>
-                                            <th></th>
-                                            {this.state.matrizNumeros[0].map((matriz, x) => {
-                                                return <th>{x + 1}</th>
-                                            })}
+                                            <tr>
+                                                <th></th>
+                                                {this.state.matrizNumeros[0].map((matriz, x) => {
+                                                    return <th key={x}>{x + 1}</th>
+                                                })}
+                                            </tr>
+
                                         </thead>
                                         <tbody>
                                             {
                                                 this.state.matrizNumeros.map((matriz, x) => {
-                                                    return <tr><th>{x + 1}</th>{matriz.map((valor, y) => {
-                                                        return <td>{this.caracteres[Number(valor) / 10]}</td>
+                                                    return <tr key={x}><th>{x + 1}</th>{matriz.map((valor, y) => {
+                                                        return <td key={y}>{this.caracteres[Number(valor) / 10]}</td>
                                                     })} </tr>
                                                 })
                                             }
