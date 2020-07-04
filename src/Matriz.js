@@ -5,8 +5,7 @@ import { CSVLink } from 'react-csv';
 import CSVReader from 'react-csv-reader';
 export default class Matriz extends Component {
 
-
-    caracteres = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"]
+    caracteres = ["*", "^", ")", "(", "!", "$", "%", "&", "#", "@"]
     colores = ["#FAFAFA", "#F5F5F5", "#EEEEEE", "#E0E0E0", "#BDBDBD", "#9E9E9E", "#757575", "#616161", "#424242", "#212121"]
     constructor() {
         super()
@@ -15,7 +14,8 @@ export default class Matriz extends Component {
             matrizCaracteres: null,
             n: null,
             m: null,
-            matrizProcesada: null
+            matrizProcesada: null,
+            algoritmo: null
         }
         this.crearMatriz.bind(this)
         this.llenarMatriz.bind(this)
@@ -49,15 +49,17 @@ export default class Matriz extends Component {
     }
 
     enviarMatriz = () => {
+        let url = 'https://young-fortress-17782.herokuapp.com/imagen?metodo='
+        this.state.algoritmo ? url += this.state.algoritmo : url += 'horizontal'
+        console.log(url)
         if (this.state.matrizNumeros) {
-            console.log(this.state.matrizNumeros)
-            axios.post('https://young-fortress-17782.herokuapp.com/imagen',
+            axios.post(url,
                 {
                     matriz: this.state.matrizNumeros
                 }
             ).then(async res => {
                 let matrizProcesadaAux = await res.data
-                console.log(matrizProcesadaAux)
+                console.log(matrizProcesadaAux['imagen_filtrada'])
                 this.setState({ matrizProcesada: matrizProcesadaAux['imagen_filtrada'] })
             }).catch(error => {
                 alert('Error al recibir datos')
@@ -67,13 +69,11 @@ export default class Matriz extends Component {
     }
 
 
-   
+
     render() {
-
         return (
-
             <div className="container">
-  
+                {console.log(this.state.algoritmo)}
                 <div className="row">
                     <div className="archivo col-md-12 m-4">
                         <CSVReader onFileLoaded={(data, fileInfo) => {
@@ -101,17 +101,32 @@ export default class Matriz extends Component {
                         <button className="btn btn-secondary" onClick={() => this.limpiarMatriz()}>Limpiar matriz</button>
                     </div> */}
                 </div>
+                <div className="row mt-1">
+                <div className="col">
+                        <h3>Algoritmo</h3>
+                    </div>
+                    <div className="col">
+                        <label htmlFor="algoritmo"></label>
+                        <select id="algoritmo" name="algoritmo" onChange={this.handleDimension}>
+                            <option value="horizontal">Horizontal</option>
+                            <option value="vertical">Vertical</option>
+                            <option value="mix">Cruz</option>
+                        </select>
+                    </div>
+                    <div className="col"></div>
+                    <div className="col"></div>
+                </div>
                 <div className="caracteres row d-flex justify-content-center mt-4">
                     {/*TABLA CARACTERES*/}
                     <div className="col-sm-2">
-                        <table className="table table-sm table-bordered bg-info">
-                            <thead>
+                        <table className="table table-sm table-bordered bg-light">
+                            <thead className="thead-dark">
                                 <tr>
                                     <th>Rango</th>
                                     <th>Caracter</th>
                                 </tr>
 
-                            </thead>
+                            </thead >
                             <tbody>
                                 {Array.from(this.caracteres).map((caracter, index) => {
                                     return (<tr key={index}><td>{index * 10} - {index * 10 + 9}</td><td>{caracter}</td></tr>)
@@ -145,7 +160,7 @@ export default class Matriz extends Component {
                                             this.state.matrizNumeros.map((matriz, x) => {
                                                 return <tr key={x}><th>{x + 1}</th>{matriz.map((valor, y) => {
                                                     return <td key={y}><input style={{ maxWidth: "40px" }} id={`${x}|${y}`} type="number" min="0" max="90" step="10" defaultValue={valor} onChange={this.onChangeMatriz} /></td>
-                                                })} </tr>
+                                                })}</tr>
                                             })
                                         }
 
@@ -172,7 +187,7 @@ export default class Matriz extends Component {
                                                 this.state.matrizNumeros.map((matriz, x) => {
                                                     return <tr key={x}><th>{x + 1}</th>{matriz.map((valor, y) => {
                                                         return <td key={y}>{this.caracteres[Number(valor) / 10]}</td>
-                                                    })} </tr>
+                                                    })}</tr>
                                                 })
                                             }
                                         </tbody>
@@ -207,7 +222,7 @@ export default class Matriz extends Component {
                                                 this.state.matrizProcesada.map((matriz, x) => {
                                                     return <tr><th>{x + 1}</th>{matriz.map((valor) => {
                                                         return <td style={{ maxWidth: "20px" }}>{valor}</td>
-                                                    })} </tr>
+                                                    })}</tr>
                                                 })
                                             }
 
@@ -232,7 +247,7 @@ export default class Matriz extends Component {
                                                 this.state.matrizProcesada.map((matriz, x) => {
                                                     return <tr><th>{x + 1}</th>{matriz.map((valor) => {
                                                         return <td>{this.caracteres[Number(valor / 10)]}</td>
-                                                    })} </tr>
+                                                    })}</tr>
                                                 })
                                             }
                                         </tbody>
@@ -252,8 +267,8 @@ export default class Matriz extends Component {
                                     <tbody>
                                         {this.state.matrizProcesada.map((matriz, x) => {
                                             return <tr><th>{x + 1}</th>{matriz.map((valor) => {
-                                                return <td><p style={{ backgroundColor: this.colores[Number(valor / 10)], color: this.colores[Number(valor / 10)] }} key={x}>{valor}</p></td>
-                                            })} </tr>
+                                                return <td><p style={{ backgroundColor: this.colores[Number(valor / 10)], color: this.colores[Number(valor / 10)] }} key={x}>{'^^'}</p></td>
+                                            })}</tr>
                                         })
                                         }
                                     </tbody>
