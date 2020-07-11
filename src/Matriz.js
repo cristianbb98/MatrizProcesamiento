@@ -3,10 +3,15 @@ import { Component } from 'react';
 import axios from 'axios'
 import { CSVLink } from 'react-csv';
 import CSVReader from 'react-csv-reader';
+import Histogram from 'react-chart-histogram';
+
 export default class Matriz extends Component {
 
     caracteres = ["*", "^", ")", "(", "!", "$", "%", "&", "#", "@"]
+    rangos = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90"]
     colores = ["#FAFAFA", "#F5F5F5", "#EEEEEE", "#E0E0E0", "#BDBDBD", "#9E9E9E", "#757575", "#616161", "#424242", "#212121"]
+    options = { fillColor: '#FFFFFF', strokeColor: '#0000FF' };
+
     constructor() {
         super()
         this.state = {
@@ -15,13 +20,17 @@ export default class Matriz extends Component {
             n: null,
             m: null,
             matrizProcesada: null,
-            algoritmo: null
+            algoritmo: null,
+            histogramaEnvio: [],
+            histogramaRecepcion: []
         }
+
         this.crearMatriz.bind(this)
         this.llenarMatriz.bind(this)
         this.handleDimension.bind(this)
         this.onChangeMatriz.bind(this)
         this.enviarMatriz.bind(this)
+        this.crearHistograma.bind(this)
     }
 
     handleDimension = e => {
@@ -32,7 +41,8 @@ export default class Matriz extends Component {
         let dimensiones = String([e.target.id]).split('|')
         let matrizNumeros = this.state.matrizNumeros
         matrizNumeros[dimensiones[0]][dimensiones[1]] = Number(e.target.value)
-        this.setState({ matrizNumeros: matrizNumeros })
+        let histograma = this.crearHistograma(matrizNumeros)
+        this.setState({ matrizNumeros: matrizNumeros, histogramaEnvio: histograma })
     }
 
     llenarMatriz = (valor) => {
@@ -59,8 +69,8 @@ export default class Matriz extends Component {
                 }
             ).then(async res => {
                 let matrizProcesadaAux = await res.data
-                console.log(matrizProcesadaAux['imagen_filtrada'])
-                this.setState({ matrizProcesada: matrizProcesadaAux['imagen_filtrada'] })
+                let histograma = this.crearHistograma(matrizProcesadaAux['imagen_filtrada'])
+                this.setState({ matrizProcesada: matrizProcesadaAux['imagen_filtrada'], histogramaRecepcion: histograma })
             }).catch(error => {
                 alert('Error al recibir datos')
             }
@@ -68,12 +78,20 @@ export default class Matriz extends Component {
         }
     }
 
+    crearHistograma = (array) => {
+        let histograma = new Array(10).fill(0)
+        Array.from(array).forEach(fila => {
+            Array.from(fila).forEach(valor => {
+                histograma[valor / 10] += 1
+            })
+        })
+        return histograma
+    }
 
 
     render() {
         return (
             <div className="container">
-                {console.log(this.state.algoritmo)}
                 <div className="row">
                     <div className="archivo col-md-12 m-4">
                         <CSVReader onFileLoaded={(data, fileInfo) => {
@@ -102,7 +120,7 @@ export default class Matriz extends Component {
                     </div> */}
                 </div>
                 <div className="row mt-1">
-                <div className="col">
+                    <div className="col">
                         <h3>Algoritmo</h3>
                     </div>
                     <div className="col">
@@ -111,6 +129,7 @@ export default class Matriz extends Component {
                             <option value="horizontal">Horizontal</option>
                             <option value="vertical">Vertical</option>
                             <option value="mix">Cruz</option>
+                            <option value="equis">Equis</option>
                         </select>
                     </div>
                     <div className="col"></div>
@@ -193,9 +212,18 @@ export default class Matriz extends Component {
                                         </tbody>
                                     </table>
                                 </div>
-
                             </div>
-
+                            <div className="row">
+                                <div className="col">
+                                    <Histogram
+                                        xLabels={this.rangos}
+                                        yValues={this.state.histogramaEnvio}
+                                        width='500'
+                                        height='300'
+                                        options={this.options}
+                                    />
+                                </div>
+                            </div>
 
                             <div className="row d-flex justify-content-center mt-1">
                                 <button className="btn btn-success" onClick={() => this.enviarMatriz()}> Procesar </button>
@@ -233,7 +261,7 @@ export default class Matriz extends Component {
 
                             </div>
                             <div className="row d-flex justify-content-center">
-
+                                <h5>Resultados</h5>
                                 <div className="col-lg-2">
                                     <table className="table table-bordered table-sm bg-light">
                                         <thead>
@@ -253,7 +281,6 @@ export default class Matriz extends Component {
                                         </tbody>
                                     </table>
                                 </div>
-
                             </div>
 
                             <div className="row d-flex justify-content-center">
@@ -275,6 +302,17 @@ export default class Matriz extends Component {
                                 </table>
                             </div>
 
+                            <div className="row">
+                                <div className="col">
+                                    <Histogram
+                                        xLabels={this.rangos}
+                                        yValues={this.state.histogramaRecepcion}
+                                        width='500'
+                                        height='300'
+                                        options={this.options}
+                                    />
+                                </div>
+                            </div>
 
                             <CSVLink data={this.state.matrizProcesada} separator={";"}>
                                 <button className="btn btn-info mt-5">Guardar archivo</button>
